@@ -21,22 +21,26 @@ def main():
     """
     s1 = "acgu"
     s2 = "cgau"
-    max_align_score = seq_align(s1, s2)
+    max_align_score, backtrack = seq_align(s1, s2)
     print(np.matrix(max_align_score))
+    print(np.matrix(backtrack))
 
 def seq_align(s1, s2):
     s1 = "-" + s1
     s2 = "-" + s2
     align_score_matrix = np.zeros([len(s1), len(s2)])
-    backtracking_matrix = np.zeros([len(s1), len(s2)])
+    backtracking_matrix = np.chararray([len(s1), len(s2)])
     for i in range(0, len(s1)):
         for j in range(0, len(s2)):
             if i == 0:
                 align_score_matrix[i][j] = j * -6
-                insert_backtracking(backtracking_matrix, i, j, "<-");
+                insert_backtracking(backtracking_matrix, i, j, '←');
             elif j == 0:
                 align_score_matrix[i][j] = i * -6
+                insert_backtracking(backtracking_matrix, i, j, '↑');
             else:
+                insert_backtracking(backtracking_matrix, i, j, '⬉');
+
                 val = 0
                 diagonal = align_score_matrix[i - 1][j - 1]
                 if s1[i] == s2[j]:
@@ -46,18 +50,23 @@ def seq_align(s1, s2):
 
                 if (align_score_matrix[i-1][j] - 6) > val:
                     val = align_score_matrix[i - 1][j] - 6
+                    insert_backtracking(backtracking_matrix, i, j, '↑');
 
                 if (align_score_matrix[i][j - 1] - 6) > val:
                     val = align_score_matrix[i][j - 1] - 6
+                    insert_backtracking(backtracking_matrix, i, j, '←');
 
                 align_score_matrix[i][j] = val
 
-    return align_score_matrix
+    return align_score_matrix, backtracking_matrix
 
 
 def insert_backtracking(matrix, i, j, direction):
     if i == 0 and j == 0:
         matrix[0][0] = 0
+    else:
+        matrix[i][j] = direction
+   ## return matrix
 
 if __name__ == "__main__":
     main()
