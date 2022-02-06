@@ -8,7 +8,7 @@ class: CS-5531-101
 instructor: Dr. Mohebbi
 """
 import numpy as np
-
+encoding="utf-8"
 
 def main():
     """
@@ -19,11 +19,21 @@ def main():
     s2 = input("Set the sequence of S2: ")
     ## verify input
     """
-    s1 = "acgu"
-    s2 = "cgau"
+    s1 = "ACGU"
+    s2 = "CGAU"
     max_align_score, backtrack = seq_align(s1, s2)
-    print(np.matrix(max_align_score))
-    print(np.matrix(backtrack))
+    print("Alignment Score Matrix")
+    for x in max_align_score:
+        print(x)
+    print("\nBacktracking Matrix")
+    for x in backtrack:
+        for y in x:
+            print(y.decode().strip("b").strip("'"), end=" ")
+        print()
+    print("\nAligned Sequences")
+    s1New, s2New = buildStrings(s1, s2, backtrack)
+    print("S1: " + s1New)
+    print("S2: " + s2New)
 
 def seq_align(s1, s2):
     s1 = "-" + s1
@@ -34,12 +44,12 @@ def seq_align(s1, s2):
         for j in range(0, len(s2)):
             if i == 0:
                 align_score_matrix[i][j] = j * -6
-                insert_backtracking(backtracking_matrix, i, j, '←');
+                insert_backtracking(backtracking_matrix, i, j, '_');
             elif j == 0:
                 align_score_matrix[i][j] = i * -6
-                insert_backtracking(backtracking_matrix, i, j, '↑');
+                insert_backtracking(backtracking_matrix, i, j, '|');
             else:
-                insert_backtracking(backtracking_matrix, i, j, '⬉');
+                insert_backtracking(backtracking_matrix, i, j, '\\');
 
                 val = 0
                 diagonal = align_score_matrix[i - 1][j - 1]
@@ -50,11 +60,11 @@ def seq_align(s1, s2):
 
                 if (align_score_matrix[i-1][j] - 6) > val:
                     val = align_score_matrix[i - 1][j] - 6
-                    insert_backtracking(backtracking_matrix, i, j, '↑');
+                    insert_backtracking(backtracking_matrix, i, j, '|');
 
                 if (align_score_matrix[i][j - 1] - 6) > val:
                     val = align_score_matrix[i][j - 1] - 6
-                    insert_backtracking(backtracking_matrix, i, j, '←');
+                    insert_backtracking(backtracking_matrix, i, j, '_');
 
                 align_score_matrix[i][j] = val
 
@@ -63,10 +73,34 @@ def seq_align(s1, s2):
 
 def insert_backtracking(matrix, i, j, direction):
     if i == 0 and j == 0:
-        matrix[0][0] = 0
+        matrix[0][0] = '0'
     else:
         matrix[i][j] = direction
    ## return matrix
+
+def buildStrings(s1, s2, backtrack):
+    i = len(s2)
+    j = len(s1)
+    s1New = ""
+    s2New = ""
+    while True:
+        back_symbol = backtrack[i][j].decode("utf-8")
+        if back_symbol == '\\':
+            s1New = s1[i - 1] + s1New
+            s2New = s2[j - 1] + s2New
+            i -= 1
+            j -= 1
+        elif  back_symbol == '_':
+            s1New = "-" + s1New
+            s2New = s2[j - 1] + s2New
+            j -= 1
+        elif back_symbol == '|':
+            s1New = s1[i - 1] + s1New
+            s2New = "-" + s2New
+            i -= 1
+        else:
+            break
+    return s1New, s2New
 
 if __name__ == "__main__":
     main()
