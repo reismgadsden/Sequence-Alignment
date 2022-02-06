@@ -19,8 +19,8 @@ def main():
     s2 = input("Set the sequence of S2: ")
     ## verify input
     """
-    s1 = "ACGU"
-    s2 = "CGAU"
+    s1 = "AGGCGGCCAUCGCGGCGGGGUUCCUCCCGUACCCAUCCCGAACACGGAAGAUAAGCCUGCCUGCGUAUUGGUGAGUACUGGAGUGGGAGACCCUCUGGGAGAGCCGAUUCGCCGCC"
+    s2 = "UGGCGGCCAUAGCGGAGGGGCCAUACCUGGUCUCGUUUCGAUCCCAGAAGUGAAGUCCUCCUGCGUUUUGUUGUUGUACUGUGGACGAGAGUCUAUGGGAAGCUCAUAACGCUGCCGGCC"
     max_align_score, backtrack = seq_align(s1, s2)
     print("Alignment Score Matrix")
     for x in max_align_score:
@@ -31,7 +31,8 @@ def main():
             print(y.decode().strip("b").strip("'"), end=" ")
         print()
     print("\nAligned Sequences")
-    s1New, s2New = buildStrings(s1, s2, backtrack)
+    s1New, s2New, num_aligned = buildStrings(s1, s2, backtrack)
+    print("Total ALignments: " + str(num_aligned))
     print("S1: " + s1New)
     print("S2: " + s2New)
 
@@ -79,15 +80,17 @@ def insert_backtracking(matrix, i, j, direction):
    ## return matrix
 
 def buildStrings(s1, s2, backtrack):
-    i = len(s2)
-    j = len(s1)
+    i = len(s1)
+    j = len(s2)
     s1New = ""
     s2New = ""
+    num_aligned = 0
     while True:
         back_symbol = backtrack[i][j].decode("utf-8")
         if back_symbol == '\\':
             s1New = s1[i - 1] + s1New
             s2New = s2[j - 1] + s2New
+            num_aligned += 1
             i -= 1
             j -= 1
         elif  back_symbol == '_':
@@ -100,7 +103,7 @@ def buildStrings(s1, s2, backtrack):
             i -= 1
         else:
             break
-    return s1New, s2New
+    return s1New, s2New, num_aligned
 
 if __name__ == "__main__":
     main()
