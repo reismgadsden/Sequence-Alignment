@@ -19,11 +19,11 @@ def main():
     s2 = input("Set the sequence of S2: ")
     ## verify input
     """
-    s1 = "AGGCGGCCAUCGCGGCGGGGUUCCUCCCGUACCCAUCCCGAACACGGAAGAUAAGCCUGCCUGCGUAUUGGUGAGUACUGGAGUGGGAGACCCUCUGGGAGAGCCGAUUCGCCGCC"
-    s2 = "UGGCGGCCAUAGCGGAGGGGCCAUACCUGGUCUCGUUUCGAUCCCAGAAGUGAAGUCCUCCUGCGUUUUGUUGUUGUACUGUGGACGAGAGUCUAUGGGAAGCUCAUAACGCUGCCGGCC"
+    s1 = "TTCATA"
+    s2 = "TGCTCGTA"
     max_align_score, backtrack = seq_align(s1, s2)
 
-    ## print functions that show the alignment and back tracking matrices
+    # # print functions that show the alignment and back tracking matrices
     # print("Alignment Score Matrix")
     # for x in max_align_score:
     #     print(x)
@@ -33,8 +33,26 @@ def main():
     #         print(y.decode().strip("b").strip("'"), end=" ")
     #     print()
     # print("\nAligned Sequences")
+
+    ## old methods that printed console
+    # s1New, s2New = buildStrings(s1, s2, backtrack)
+    # print("Alignment Score: " + str(max_align_score[len(s1)][len(s2)]))
+    #
+    # i = 0
+    # totalAlignments = 0
+    # while i != len(s1New):
+    #     if s1New[i] == s2New[i]:
+    #         totalAlignments += 1
+    #     i += 1
+    # print("Total # of Alignments: " + str(totalAlignments))
+    # print("S1: " + s1New)
+    # print("S2: " + s2New)
+
+    f = open("results.txt", "a")
     s1New, s2New = buildStrings(s1, s2, backtrack)
-    print("Alignment Score: " + str(max_align_score[len(s1)][len(s2)]))
+    f.write("S1: " + s1 + "\n")
+    f.write("S2: " + s2 + "\n")
+    f.write("Alignment Score: " + str(max_align_score[len(s1)][len(s2)]) + "\n")
 
     i = 0
     totalAlignments = 0
@@ -42,9 +60,11 @@ def main():
         if s1New[i] == s2New[i]:
             totalAlignments += 1
         i += 1
-    print("Total # of Alignments: " + str(totalAlignments))
-    print("S1: " + s1New)
-    print("S2: " + s2New)
+    f.write("Total # of Alignments: " + str(totalAlignments) + "\n")
+    f.write("Aligned S1: " + s1New + "\n")
+    f.write("Aligned S2: " + s2New + "\n")
+    f.write("\n")
+    f.close()
 
 def seq_align(s1, s2):
     s1 = "-" + s1
