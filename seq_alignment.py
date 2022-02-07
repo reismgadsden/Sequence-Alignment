@@ -22,17 +22,27 @@ def main():
     s1 = "AGGCGGCCAUCGCGGCGGGGUUCCUCCCGUACCCAUCCCGAACACGGAAGAUAAGCCUGCCUGCGUAUUGGUGAGUACUGGAGUGGGAGACCCUCUGGGAGAGCCGAUUCGCCGCC"
     s2 = "UGGCGGCCAUAGCGGAGGGGCCAUACCUGGUCUCGUUUCGAUCCCAGAAGUGAAGUCCUCCUGCGUUUUGUUGUUGUACUGUGGACGAGAGUCUAUGGGAAGCUCAUAACGCUGCCGGCC"
     max_align_score, backtrack = seq_align(s1, s2)
-    print("Alignment Score Matrix")
-    for x in max_align_score:
-        print(x)
-    print("\nBacktracking Matrix")
-    for x in backtrack:
-        for y in x:
-            print(y.decode().strip("b").strip("'"), end=" ")
-        print()
-    print("\nAligned Sequences")
-    s1New, s2New, num_aligned = buildStrings(s1, s2, backtrack)
-    print("Total ALignments: " + str(num_aligned))
+
+    ## print functions that show the alignment and back tracking matrices
+    # print("Alignment Score Matrix")
+    # for x in max_align_score:
+    #     print(x)
+    # print("\nBacktracking Matrix")
+    # for x in backtrack:
+    #     for y in x:
+    #         print(y.decode().strip("b").strip("'"), end=" ")
+    #     print()
+    # print("\nAligned Sequences")
+    s1New, s2New = buildStrings(s1, s2, backtrack)
+    print("Alignment Score: " + str(max_align_score[len(s1)][len(s2)]))
+
+    i = 0
+    totalAlignments = 0
+    while i != len(s1New):
+        if s1New[i] == s2New[i]:
+            totalAlignments += 1
+        i += 1
+    print("Total # of Alignments: " + str(totalAlignments))
     print("S1: " + s1New)
     print("S2: " + s2New)
 
@@ -90,7 +100,6 @@ def buildStrings(s1, s2, backtrack):
         if back_symbol == '\\':
             s1New = s1[i - 1] + s1New
             s2New = s2[j - 1] + s2New
-            num_aligned += 1
             i -= 1
             j -= 1
         elif  back_symbol == '_':
@@ -103,7 +112,7 @@ def buildStrings(s1, s2, backtrack):
             i -= 1
         else:
             break
-    return s1New, s2New, num_aligned
+    return s1New, s2New
 
 if __name__ == "__main__":
     main()
